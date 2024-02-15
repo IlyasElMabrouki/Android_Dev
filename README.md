@@ -1,4 +1,5 @@
 ## Android Applications
 - IMC App
-- Calculator App
+- Calculatrice V1 App
 - Form Navigation
+- Calculatrice V2 App
