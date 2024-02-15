@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/../.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Semestre 4/AI/SMA &amp; IA Distribuée/Tps/dl4j_diabete_app" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Semestre 4/AI/SMA &amp; IA Distribuée/Tps/dl4j_iris_app" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Semestre 4/AI/SMA &amp; IA Distribuée/Tps/model_cnn_alzhaimer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Semestre 4/AI/SMA &amp; IA Distribuée/Tps/model_cnn_emnist" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Semestre 4/JEE/CinemaProject" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Semestre 4/JEE/CinemaProject/front-end" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Semestre 4/JEE/TPs/SMA1" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Semestre 4/JEE/TPs/springmvc_patient" vcs="Git" />
+  </component>
+</project>
