@@ -3,71 +3,69 @@ package com.example.first_app;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView resText;
-    Button btn;
-
-    String value1;
-    String value2;
-    char operator;
+    private TextView tvResult;
+    private StringBuilder expressionBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_first);
+
+        // Initialize your views
+        tvResult = findViewById(R.id.tvResult);
+        expressionBuilder = new StringBuilder();
     }
 
-    public void addToView(View v){
-        resText = findViewById(R.id.resText);
-        btn = findViewById(v.getId());
+    // Method to handle button clicks
+    public void onButtonClick(View view) {
+        Button button = (Button) view;
+        String buttonText = button.getText().toString();
 
-        resText.setText(resText.getText().toString() + btn.getText().toString());
+        // Append the clicked button text to the expression
+        expressionBuilder.append(buttonText);
+        updateDisplay();
     }
 
+    public void evaluateExpression(View view) {
+        String expression = expressionBuilder.toString();
+        try {
+            // Use the ExpressionEvaluator class to evaluate the expression
+            double result = ExpressionEvaluator.evaluate(expression);
 
-    public void showResult(View v){
-        boolean findOperator = false;
-        for (int i=0;i<resText.getText().length();i++) {
-            if (resText.getText().toString().charAt(i) != '+' && !findOperator){
-                value1 = value1 + resText.getText().toString().charAt(i);
-            }
-            else if (resText.getText().toString().charAt(i) != '+' && findOperator){
-                value1 = value1 + resText.getText().toString().charAt(i);
-            }
-            else {
-                operator = resText.getText().toString().charAt(i);
-                findOperator = true;
-            }
+            // Display the result
+            tvResult.setText(String.valueOf(result));
+        } catch (ArithmeticException e) {
+            // Handle arithmetic errors (e.g., division by zero)
+            tvResult.setText("Error: " + e.getMessage());
+        } catch (Exception e) {
+            // Handle other exceptions
+            tvResult.setText("Error");
+            e.printStackTrace();
         }
     }
 
-    public Double calculate(String value1, String value2, char operator){
-        if (operator == '+'){
-            return Double.parseDouble(value1) + Double.parseDouble(value2);
-        }
-        else if (operator == '-'){
-            return Double.parseDouble(value1) - Double.parseDouble(value2);
-        }
-        else if (operator == 'x'){
-            return Double.parseDouble(value1) * Double.parseDouble(value2);
-        }
-        else {
-            return Double.parseDouble(value1) / Double.parseDouble(value2);
-        }
+    // Method to update the display with the current expression
+    private void updateDisplay() {
+        tvResult.setText(expressionBuilder.toString());
     }
 
-    public void sup(View v){
-        resText.setText(resText.getText().toString().substring(0,resText.length()-1));
+    // Method to clear the expression and result
+    public void clear(View view) {
+        expressionBuilder.setLength(0);
+        updateDisplay();
     }
 
-    public void reset(View v){
-        resText.setText("");
-        resText.requestFocus();
+    // Method to delete the last character from the expression
+    public void delete(View view) {
+        if (expressionBuilder.length() > 0) {
+            expressionBuilder.deleteCharAt(expressionBuilder.length() - 1);
+            updateDisplay();
+        }
     }
 }
