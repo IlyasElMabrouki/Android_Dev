@@ -30,6 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ilyaselmabrouki.imc_v2.ui.theme.IMC_V2Theme
 
+//This is the entry point of the Android application.
+//It sets the content view to IMCLayout() using Jetpack Compose.
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//This composable function represents the main layout of the IMC (BMI) calculator.
+//It initializes three state variables: weight, height, and result, using mutableFloatStateOf.
+//Inside Surface, it lays out the UI components using Column.
+//It includes ImageWithTextLayout, TwoTextBoxLayout, and ButtonTextImageLayout composable functions.
 @Composable
 fun IMCLayout(){
     var weight by remember { mutableFloatStateOf(0F) }
@@ -75,6 +81,9 @@ fun IMCLayout(){
     }
 }
 
+//This composable function renders two text fields for entering weight and height.
+//It receives weight and height values and functions to handle their changes.
+//Each text field is wrapped inside a Column, along with corresponding text labels.
 @Composable
 fun TwoTextBoxLayout(weight: Float, height: Float, onWeightChange: (Float) -> Unit, onHeightChange: (Float) -> Unit) {
     Column(
@@ -103,6 +112,8 @@ fun TwoTextBoxLayout(weight: Float, height: Float, onWeightChange: (Float) -> Un
     }
 }
 
+//This composable function displays an image with text.
+//It shows an image using Image composable.
 @Composable
 fun ImageWithTextLayout() {
     Column(
@@ -116,6 +127,9 @@ fun ImageWithTextLayout() {
     }
 }
 
+//This composable function renders a button, text, and image.
+//It receives the result of BMI calculation and a callback function onButtonClick for handling button click.
+//If the result is non-zero, it displays the BMI result along with an image representing BMI category.
 @Composable
 fun ButtonTextImageLayout(result: Float, onButtonClick: () -> Unit) {
     Column(
@@ -143,6 +157,7 @@ fun ButtonTextImageLayout(result: Float, onButtonClick: () -> Unit) {
     }
 }
 
+//This function maps BMI values to corresponding drawable resources (images).
 @Composable
 fun getImageResourceId(bmi: Float): Int {
     return when {
@@ -153,6 +168,7 @@ fun getImageResourceId(bmi: Float): Int {
     }
 }
 
+//This is a preview function for the layout. It's used for UI previewing during development.
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
