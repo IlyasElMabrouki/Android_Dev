@@ -20,7 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +46,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+data class TeamScore(var score: Int = 0)
+
 @Composable
 fun Court_CounterApp() {
-    var teamA by remember { mutableIntStateOf(0) }
-    var teamB by remember { mutableIntStateOf(0) }
+    var teamA by rememberSaveable { mutableIntStateOf(0) }
+    var teamB by rememberSaveable { mutableIntStateOf(0) }
 
     Court_CounterTheme {
         // A surface container using the 'background' color from the theme
@@ -65,16 +67,20 @@ fun Court_CounterApp() {
                 Row(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    ColumnTeamA(teamA, { teamA += 3 }, { teamA += 2 }) { teamA += 1 }
+                    TeamColumn(teamA, "Team A") {
+                        teamA+= it
+                    }
                     Spacer(modifier = Modifier.width(16.dp)) // Add space between columns
-                    ColumnTeamB(teamB, { teamB += 3 }, { teamB += 2 }) { teamB += 1 }
+                    TeamColumn(teamB, "Team B") {
+                        teamB += it
+                    }
                 }
                 Row {
                     Spacer(modifier = Modifier.height(16.dp)) // Add space between the columns and the reset button
-                    ResetButton(onResetClick = {
+                    ResetButton {
                         teamA = 0
                         teamB = 0
-                    })
+                    }
                 }
             }
         }
@@ -82,82 +88,26 @@ fun Court_CounterApp() {
 }
 
 @Composable
-fun ColumnTeamA(result: Int, onButton3Click: () -> Unit, onButton2Click: () -> Unit, onButton1Click: () -> Unit){
+fun TeamColumn(teamScore: Int, teamName: String, onScoreChange: (Int) -> Unit) {
+    val buttonColors = ButtonDefaults.buttonColors(contentColor = Color.White)
+    val buttonShape = RoundedCornerShape(0.dp)
 
-    val buttonColors = ButtonDefaults.buttonColors(
-        contentColor = Color.White,
-    )
-    val buttonShape = RoundedCornerShape(0.dp) // Modify border radius here
-
-    Column (
-        verticalArrangement = Arrangement.Center,
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Team A")
-        Text(text = "$result")
-        Spacer(modifier = Modifier.height(16.dp)) // Add spacing between the text and buttons
-        Button(
-            onClick = onButton3Click,
-            colors = buttonColors,
-            shape = buttonShape
-        ) {
+        Text(text = teamName)
+        Text(text = "${teamScore}")
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { onScoreChange(3) }, colors = buttonColors, shape = buttonShape) {
             Text(text = "+3 Points")
         }
-        Spacer(modifier = Modifier.height(8.dp)) // Add spacing between buttons
-        Button(
-            onClick = onButton2Click,
-            colors = buttonColors,
-            shape = buttonShape
-        ) {
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = { onScoreChange(2) }, colors = buttonColors, shape = buttonShape) {
             Text(text = "+2 Points")
         }
-        Spacer(modifier = Modifier.height(8.dp)) // Add spacing between buttons
-        Button(
-            onClick = onButton1Click,
-            colors = buttonColors,
-            shape = buttonShape
-        ) {
-            Text(text = "+1 Points")
-        }
-    }
-}
-
-@Composable
-fun ColumnTeamB(result: Int, onButton3Click: () -> Unit, onButton2Click: () -> Unit, onButton1Click: () -> Unit) {
-    val buttonColors = ButtonDefaults.buttonColors(
-        contentColor = Color.White,
-    )
-    val buttonShape = RoundedCornerShape(0.dp) // Modify border radius here
-
-    Column (
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Team B")
-        Text(text = "$result")
-        Spacer(modifier = Modifier.height(16.dp)) // Add spacing between the text and buttons
-        Button(
-            onClick = onButton3Click,
-            colors = buttonColors,
-            shape = buttonShape
-        ) {
-            Text(text = "+3 Points")
-        }
-        Spacer(modifier = Modifier.height(8.dp)) // Add spacing between buttons
-        Button(
-            onClick = onButton2Click,
-            colors = buttonColors,
-            shape = buttonShape
-        ) {
-            Text(text = "+2 Points")
-        }
-        Spacer(modifier = Modifier.height(8.dp)) // Add spacing between buttons
-        Button(
-            onClick = onButton1Click,
-            colors = buttonColors,
-            shape = buttonShape
-        ) {
-            Text(text = "+1 Points")
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = { onScoreChange(1) }, colors = buttonColors, shape = buttonShape) {
+            Text(text = "+1 Point")
         }
     }
 }
