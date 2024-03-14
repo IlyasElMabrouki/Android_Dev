@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,11 +14,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +48,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Court_CounterApp() {
+    var teamA by remember { mutableIntStateOf(0) }
+    var teamB by remember { mutableIntStateOf(0) }
+
     Court_CounterTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -60,13 +65,16 @@ fun Court_CounterApp() {
                 Row(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    ColumnTeamA()
+                    ColumnTeamA(teamA, { teamA += 3 }, { teamA += 2 }) { teamA += 1 }
                     Spacer(modifier = Modifier.width(16.dp)) // Add space between columns
-                    ColumnTeamB()
+                    ColumnTeamB(teamB, { teamB += 3 }, { teamB += 2 }) { teamB += 1 }
                 }
                 Row {
                     Spacer(modifier = Modifier.height(16.dp)) // Add space between the columns and the reset button
-                    ResetButton()
+                    ResetButton(onResetClick = {
+                        teamA = 0
+                        teamB = 0
+                    })
                 }
             }
         }
@@ -74,7 +82,8 @@ fun Court_CounterApp() {
 }
 
 @Composable
-fun ColumnTeamA(){
+fun ColumnTeamA(result: Int, onButton3Click: () -> Unit, onButton2Click: () -> Unit, onButton1Click: () -> Unit){
+
     val buttonColors = ButtonDefaults.buttonColors(
         contentColor = Color.White,
     )
@@ -85,10 +94,10 @@ fun ColumnTeamA(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Team A")
-        Text(text = "0")
+        Text(text = "$result")
         Spacer(modifier = Modifier.height(16.dp)) // Add spacing between the text and buttons
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onButton3Click,
             colors = buttonColors,
             shape = buttonShape
         ) {
@@ -96,7 +105,7 @@ fun ColumnTeamA(){
         }
         Spacer(modifier = Modifier.height(8.dp)) // Add spacing between buttons
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onButton2Click,
             colors = buttonColors,
             shape = buttonShape
         ) {
@@ -104,7 +113,7 @@ fun ColumnTeamA(){
         }
         Spacer(modifier = Modifier.height(8.dp)) // Add spacing between buttons
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onButton1Click,
             colors = buttonColors,
             shape = buttonShape
         ) {
@@ -114,7 +123,7 @@ fun ColumnTeamA(){
 }
 
 @Composable
-fun ColumnTeamB(){
+fun ColumnTeamB(result: Int, onButton3Click: () -> Unit, onButton2Click: () -> Unit, onButton1Click: () -> Unit) {
     val buttonColors = ButtonDefaults.buttonColors(
         contentColor = Color.White,
     )
@@ -125,10 +134,10 @@ fun ColumnTeamB(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Team B")
-        Text(text = "0")
+        Text(text = "$result")
         Spacer(modifier = Modifier.height(16.dp)) // Add spacing between the text and buttons
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onButton3Click,
             colors = buttonColors,
             shape = buttonShape
         ) {
@@ -136,7 +145,7 @@ fun ColumnTeamB(){
         }
         Spacer(modifier = Modifier.height(8.dp)) // Add spacing between buttons
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onButton2Click,
             colors = buttonColors,
             shape = buttonShape
         ) {
@@ -144,7 +153,7 @@ fun ColumnTeamB(){
         }
         Spacer(modifier = Modifier.height(8.dp)) // Add spacing between buttons
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onButton1Click,
             colors = buttonColors,
             shape = buttonShape
         ) {
@@ -154,14 +163,14 @@ fun ColumnTeamB(){
 }
 
 @Composable
-fun ResetButton(){
+fun ResetButton(onResetClick: () -> Unit) {
     val buttonColors = ButtonDefaults.buttonColors(
         contentColor = Color.White,
     )
     val buttonShape = RoundedCornerShape(0.dp) // Modify border radius here
 
     Button(
-        onClick = { /*TODO*/ },
+        onClick = onResetClick,
         colors = buttonColors,
         shape = buttonShape
     ) {
