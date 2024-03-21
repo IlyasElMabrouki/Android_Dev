@@ -15,6 +15,13 @@
  */
 package com.example.racetracker.ui
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +33,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -36,6 +44,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,13 +53,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.racetracker.R
 import com.example.racetracker.ui.theme.RaceTrackerTheme
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun RaceTrackerApp() {
@@ -66,6 +79,14 @@ fun RaceTrackerApp() {
         RaceParticipant(name = "Player 2", progressIncrement = 2)
     }
     var raceInProgress by remember { mutableStateOf(false) }
+
+    LaunchedEffect(playerOne, playerTwo) {
+        coroutineScope {
+            launch { playerOne.run() }
+            launch { playerTwo.run() }
+        }
+        raceInProgress = false
+    }
 
     RaceTrackerScreen(
         playerOne = playerOne,
@@ -105,11 +126,9 @@ private fun RaceTrackerScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_walk),
-                contentDescription = null,
-                modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
-            )
+            MovingIcon(playerProgress = playerOne.progressFactor)
+            Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_large)))
+            MovingIcon(playerOne.progressFactor)
             StatusIndicator(
                 participantName = playerOne.name,
                 currentProgress = playerOne.currentProgress,
@@ -213,6 +232,37 @@ private fun RaceControls(
         ) {
             Text(stringResource(R.string.reset))
         }
+    }
+}
+
+@Composable
+fun MovingIcon(playerProgress: Float) {
+    var position by remember { mutableStateOf(0F) }
+
+    // Define animation specs
+    val infiniteTransition = rememberInfiniteTransition()
+    val animationOffset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = playerProgress * 200f, // Scale playerProgress to match desired range
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000), // Animation duration
+            repeatMode = RepeatMode.Reverse // Reverse animation direction
+        )
+    )
+
+    // Update position based on animation
+    position = animationOffset
+
+    // Composable that moves the icon horizontally
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.width(position.dp)) // Spacer to move icon
+        Icon(
+            painter = painterResource(id = R.drawable.ic_walk),
+            contentDescription = null,
+            modifier = Modifier
+                .size(48.dp) // Icon size
+                .background(Color.Transparent) // Optional: Set background color
+        )
     }
 }
 
