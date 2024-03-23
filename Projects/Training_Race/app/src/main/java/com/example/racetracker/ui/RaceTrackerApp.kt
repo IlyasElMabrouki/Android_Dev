@@ -15,12 +15,15 @@
  */
 package com.example.racetracker.ui
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateValue
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,12 +83,14 @@ fun RaceTrackerApp() {
     }
     var raceInProgress by remember { mutableStateOf(false) }
 
-    LaunchedEffect(playerOne, playerTwo) {
-        coroutineScope {
-            launch { playerOne.run() }
-            launch { playerTwo.run() }
+    if (raceInProgress) {
+        LaunchedEffect(playerOne, playerTwo) {
+            coroutineScope {
+                launch { playerOne.run() }
+                launch { playerTwo.run() }
+            }
+            raceInProgress = false
         }
-        raceInProgress = false
     }
 
     RaceTrackerScreen(
@@ -126,9 +131,9 @@ private fun RaceTrackerScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            MovingIcon(playerProgress = playerOne.progressFactor)
-            Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_large)))
             MovingIcon(playerOne.progressFactor)
+            Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_large)))
+            MovingIcon(playerTwo.progressFactor)
             StatusIndicator(
                 participantName = playerOne.name,
                 currentProgress = playerOne.currentProgress,
@@ -237,31 +242,21 @@ private fun RaceControls(
 
 @Composable
 fun MovingIcon(playerProgress: Float) {
-    var position by remember { mutableStateOf(0F) }
+    val transition = updateTransition(targetState = playerProgress, label = "Player Progress Transition")
+    val animationOffset by transition.animateDp(
+        transitionSpec = {
+            tween(durationMillis = 1000, easing = LinearOutSlowInEasing)
+        }
+    ) { progress ->
+        (progress * 250).dp // Convert Float to Dp
+    }
 
-    // Define animation specs
-    val infiniteTransition = rememberInfiniteTransition()
-    val animationOffset by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = playerProgress * 200f, // Scale playerProgress to match desired range
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2000), // Animation duration
-            repeatMode = RepeatMode.Reverse // Reverse animation direction
-        )
-    )
-
-    // Update position based on animation
-    position = animationOffset
-
-    // Composable that moves the icon horizontally
     Row(modifier = Modifier.fillMaxWidth()) {
-        Spacer(modifier = Modifier.width(position.dp)) // Spacer to move icon
+        Spacer(modifier = Modifier.width(animationOffset))
         Icon(
             painter = painterResource(id = R.drawable.ic_walk),
             contentDescription = null,
-            modifier = Modifier
-                .size(48.dp) // Icon size
-                .background(Color.Transparent) // Optional: Set background color
+            modifier = Modifier.size(48.dp).background(Color.Transparent)
         )
     }
 }
