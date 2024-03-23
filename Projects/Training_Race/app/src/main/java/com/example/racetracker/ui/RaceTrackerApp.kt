@@ -16,12 +16,7 @@
 package com.example.racetracker.ui
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateValue
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
@@ -67,6 +62,8 @@ import com.example.racetracker.R
 import com.example.racetracker.ui.theme.RaceTrackerTheme
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.material.*
+import com.example.racetracker.ui.theme.Typography
 
 @Composable
 fun RaceTrackerApp() {
@@ -76,10 +73,10 @@ fun RaceTrackerApp() {
      * Coroutines that implementation detail is stripped out.
      */
     val playerOne = remember {
-        RaceParticipant(name = "Player 1", progressIncrement = 1)
+        RaceParticipant(name = "Player 1", progressIncrement = 1, color = Color(0xFF00796B))
     }
     val playerTwo = remember {
-        RaceParticipant(name = "Player 2", progressIncrement = 2)
+        RaceParticipant(name = "Player 2", progressIncrement = 2, color = Color(0xFF8BC34A))
     }
     var raceInProgress by remember { mutableStateOf(false) }
 
@@ -131,9 +128,9 @@ private fun RaceTrackerScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            MovingIcon(playerOne.progressFactor)
+            MovingIcon(playerOne)
             Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_large)))
-            MovingIcon(playerTwo.progressFactor)
+            MovingIcon(playerTwo)
             StatusIndicator(
                 participantName = playerOne.name,
                 currentProgress = playerOne.currentProgress,
@@ -142,7 +139,8 @@ private fun RaceTrackerScreen(
                     playerOne.maxProgress
                 ),
                 progressFactor = playerOne.progressFactor,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                playerColor = playerOne.color
             )
             Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_large)))
             StatusIndicator(
@@ -154,6 +152,7 @@ private fun RaceTrackerScreen(
                 ),
                 progressFactor = playerTwo.progressFactor,
                 modifier = Modifier.fillMaxWidth(),
+                playerColor = playerTwo.color
             )
             Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_large)))
             RaceControls(
@@ -176,6 +175,7 @@ private fun StatusIndicator(
     currentProgress: Int,
     maxProgress: String,
     progressFactor: Float,
+    playerColor: Color,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -193,7 +193,8 @@ private fun StatusIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(dimensionResource(R.dimen.progress_indicator_height))
-                    .clip(RoundedCornerShape(dimensionResource(R.dimen.progress_indicator_corner_radius)))
+                    .clip(RoundedCornerShape(dimensionResource(R.dimen.progress_indicator_corner_radius))),
+                color = playerColor
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -241,8 +242,8 @@ private fun RaceControls(
 }
 
 @Composable
-fun MovingIcon(playerProgress: Float) {
-    val transition = updateTransition(targetState = playerProgress, label = "Player Progress Transition")
+fun MovingIcon(player : RaceParticipant) {
+    val transition = updateTransition(targetState = player.progressFactor, label = "Player Progress Transition")
     val animationOffset by transition.animateDp(
         transitionSpec = {
             tween(durationMillis = 1000, easing = LinearOutSlowInEasing)
@@ -256,6 +257,7 @@ fun MovingIcon(playerProgress: Float) {
         Icon(
             painter = painterResource(id = R.drawable.ic_walk),
             contentDescription = null,
+            tint = player.color,
             modifier = Modifier.size(48.dp).background(Color.Transparent)
         )
     }
