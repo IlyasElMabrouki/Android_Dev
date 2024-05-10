@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ilyaselmabrouki.weatherapi"
+    namespace = "com.ilyaselmabrouki.gps"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ilyaselmabrouki.weatherapi"
+        applicationId = "com.ilyaselmabrouki.gps"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -50,8 +50,9 @@ android {
 }
 
 dependencies {
-    implementation("com.android.volley:volley:1.2.0")
-    implementation("androidx.appcompat:appcompat:1.4.0")
+    implementation("com.google.android.gms:play-services-location:18.0.0")
+    implementation("androidx.activity:activity-ktx:1.2.0")
+    implementation("androidx.fragment:fragment-ktx:1.3.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
