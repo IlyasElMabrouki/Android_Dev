@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.First_App">
         <activity
-            android:name=".MainActivity"
+            android:name=".com.ilyaselmabrouki.gps.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.First_App.NoActionBar">
