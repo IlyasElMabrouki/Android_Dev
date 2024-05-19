@@ -34,6 +34,15 @@
         <meta-data
             android:name="com.google.android.gms.maps.AIzaSyCVp0QjvTjxm9qpjlvC5AUpa0GILJJn6G0"
             android:value="YOUR_API_KEY_HERE" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -78,14 +80,15 @@ class MainActivity : ComponentActivity() {
     private fun createImageUri(): Uri {
         val context = applicationContext
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val imageFileName = "JPEG_${timeStamp}_"
-        val storageDir = context.getExternalFilesDir(null)
-        return Uri.Builder()
-            .scheme("file")
-            .authority(context.packageName)
-            .appendPath("pictures")
-            .appendPath("JPEG_${timeStamp}.jpg")
-            .build()
+        val imageFileName = "JPEG_${timeStamp}.jpg"
+        val storageDir = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "gps")
+        if (!storageDir.exists()) storageDir.mkdirs()
+        val imageFile = File(storageDir, imageFileName)
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            imageFile
+        )
     }
 
     private fun fetchLocationAndDisplayImage(imageUri: Uri) {
