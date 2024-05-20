@@ -63,19 +63,17 @@ fun AuthenticationScreen(onAuthenticate: (String, String) -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Login", style = MaterialTheme.typography.h4)
-        Spacer(modifier = Modifier.height(16.dp))
         TextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("Username") },
+            label = { Text("Nom d'utilisateur") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text("Mot de passe") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
@@ -86,7 +84,7 @@ fun AuthenticationScreen(onAuthenticate: (String, String) -> Unit) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Login")
+            Text("Connexion")
         }
     }
 }

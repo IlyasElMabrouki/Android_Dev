@@ -6,17 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.ilyaselmabrouki.elmabrouki_ilyas_glsid_2.ui.theme.Elmabrouki_ilyas_GLSID_2Theme
+import com.ilyaselmabrouki.elmabrouki_ilyas_glsid_2.ui.theme.DiceGameTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Elmabrouki_ilyas_GLSID_2Theme {
+            DiceGameTheme{
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -29,11 +28,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    Elmabrouki_ilyas_GLSID_2Theme {
+    DiceGameTheme {
         AppContent()
     }
 }

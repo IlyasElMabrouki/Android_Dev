@@ -22,7 +22,7 @@ fun DiceGameUI(sharedPreferences: android.content.SharedPreferences) {
     var gameOver by remember { mutableStateOf(false) }
     var gameStarted by remember { mutableStateOf(false) }
     var moneyInput by remember { mutableStateOf(TextFieldValue("")) }
-    val betAmount = 10 // Fixed bet amount
+    var showResult by remember { mutableStateOf(false) }
 
     if (!gameStarted) {
         Column(
@@ -71,37 +71,41 @@ fun DiceGameUI(sharedPreferences: android.content.SharedPreferences) {
 
             if (gameOver || playerMoney <= 0 || casinoMoney <= 0) {
                 Text(
-                    text = "Winner is ${winner(playerMoney, casinoMoney)}!",
-                    style = MaterialTheme.typography.h4,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Player Money: $playerMoney",
-                    style = MaterialTheme.typography.h6,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Text(
-                    text = "Casino Money: $casinoMoney",
+                    text = "Le Gagnant est ${winner(playerMoney, casinoMoney)}!",
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             } else {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Button(
+                    onClick = {
+                        diceRoll = rollDice()
+                        showResult = true
+                        if (diceRoll == 2 || diceRoll == 3) {
+                            casinoMoney --
+                        } else {
+                            playerMoney --
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Result: $diceRoll", style = MaterialTheme.typography.h6)
-                    Image(
-                        painter = painterResource(id = getDiceImageResource(diceRoll)),
-                        contentDescription = "Dice",
-                        modifier = Modifier.size(100.dp) // Reduced size
-                    )
+                    Text(text = "Lancer le dé")
                 }
-
+                if (showResult) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Résultat $diceRoll", style = MaterialTheme.typography.h6)
+                        Image(
+                            painter = painterResource(id = getDiceImageResource(diceRoll)),
+                            contentDescription = "Dice",
+                            modifier = Modifier.size(100.dp) // Reduced size
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(
@@ -110,26 +114,10 @@ fun DiceGameUI(sharedPreferences: android.content.SharedPreferences) {
                         .padding(horizontal = 16.dp)
                 ) {
                     Button(
-                        onClick = {
-                            diceRoll = rollDice()
-                            if (diceRoll == 2 || diceRoll == 3) {
-                                casinoMoney --
-                            } else {
-                                playerMoney --
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Roll Dice")
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
                         onClick = { gameOver = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = "Finish Game")
+                        Text(text = "Terminer le jeu")
                     }
                 }
             }
