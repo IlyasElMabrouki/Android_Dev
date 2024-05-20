@@ -30,28 +30,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AppContent() {
-    val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("DiceGamePrefs", Context.MODE_PRIVATE)
-    val storedUsername = sharedPreferences.getString("username", null)
-    val storedPassword = sharedPreferences.getString("password", null)
-    var authenticated by remember { mutableStateOf(storedUsername?.isNotEmpty() == true && storedPassword?.isNotEmpty() == true) }
-
-    if (authenticated) {
-        DiceGameUI(sharedPreferences)
-    } else {
-        AuthenticationScreen { username, password ->
-            sharedPreferences.edit().apply {
-                putString("username", username)
-                putString("password", password)
-                apply()
-            }
-            authenticated = true
-        }
-    }
-}
-
-@Composable
 fun AuthenticationScreen(onAuthenticate: (String, String) -> Unit) {
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
